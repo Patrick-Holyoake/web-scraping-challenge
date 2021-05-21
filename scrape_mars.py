@@ -13,7 +13,7 @@ import time
 def init_browser():
     
     executable_path = {"executable_path": "chromedriver.exe"}
-    return Browser("chrome", **executable_path, headless=False)
+    return Browser("chrome", **executable_path, headless=True)
 
 # Define scrape function
 def scrape():
@@ -66,12 +66,15 @@ def scrape():
     hemispheres_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(hemispheres_url)
     
-    no_clicks = len(browser.find_by_css('div[class="description"] a'))
+    #no_clicks = len(browser.find_by_css('div[class="description"] a'))
+
+    no_clicks = 4
     
     hemisphere_images = []
     
     for i in range(no_clicks):
     
+        #links = browser.find_by_css(".description")
         links = browser.find_by_css('div[class="description"] a')
     
         links[i].click()
@@ -81,8 +84,10 @@ def scrape():
         hemisphere_html = browser.html
         hemisphere_soup = bs(hemisphere_html, 'html.parser')
 
-        title = hemisphere_soup.find("h2", class_="title").get_text()
+        title = hemisphere_soup.find("h2", class_="title")
         img_url = hemisphere_soup.find("div", class_="downloads").a['href']
+
+        browser.back()
     
         dict = {}
         dict["title"] = title
