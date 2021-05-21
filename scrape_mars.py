@@ -13,7 +13,7 @@ import time
 def init_browser():
     
     executable_path = {"executable_path": "chromedriver.exe"}
-    return Browser("chrome", **executable_path, headless=True)
+    return Browser("chrome", **executable_path, headless=False)
 
 # Define scrape function
 def scrape():
@@ -28,6 +28,8 @@ def scrape():
     html = browser.html
     news_soup = bs(html, 'html.parser')
     news = news_soup.find(class_="image_and_description_container")
+    news_title = news_soup.find(class_="content_title").text
+
     f_para = news.find(class_="article_teaser_body").get_text()
     
     #Mars image
@@ -97,7 +99,7 @@ def scrape():
     browser.quit()
     
     # add all results to mars_data dictionary
-    mars_data["news title"] = news
+    mars_data["news title"] = news_title
     mars_data["f_para"] = f_para
     mars_data["featured_image_url"] = featured_image_url
     mars_data["table"] = html_table
