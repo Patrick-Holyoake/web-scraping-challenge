@@ -7,13 +7,14 @@ from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 import pandas as pd
 from webdriver_manager.chrome import ChromeDriverManager
+import datetime as dt
 import time
 
 # Define function to start browser
 def init_browser():
     
     executable_path = {"executable_path": "chromedriver.exe"}
-    return Browser("chrome", **executable_path, headless=False)
+    return Browser ("chrome", **executable_path, headless=False)
 
 # Define scrape function
 def scrape():
@@ -61,8 +62,7 @@ def scrape():
     # Convert table to html
     html_table = new_df.to_html()
     
-    # Clean table
-    html_table = html_table.replace('\n', '')
+    
     
     # Mars Hemisphere
     hemispheres_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
@@ -76,17 +76,18 @@ def scrape():
     
     for i in range(no_clicks):
     
-        #links = browser.find_by_css(".description")
-        links = browser.find_by_css('div[class="description"] a')
+        links = browser.find_by_css("div.description a")
+        print(links, "string!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #links = browser.find_by_css('div[class="description"] a')
     
         links[i].click()
     
-        time.sleep(5)
+        time.sleep(1)
     
         hemisphere_html = browser.html
         hemisphere_soup = bs(hemisphere_html, 'html.parser')
 
-        title = hemisphere_soup.find("h2", class_="title")
+        title = hemisphere_soup.find("h2", class_="title").get_text()
         img_url = hemisphere_soup.find("div", class_="downloads").a['href']
 
         browser.back()
@@ -95,8 +96,11 @@ def scrape():
         dict["title"] = title
         dict["img_url"] = img_url
         hemisphere_images.append(dict)
+        browser.visit(hemispheres_url)
     
     browser.quit()
+
+    
     
     # add all results to mars_data dictionary
     mars_data["news title"] = news_title

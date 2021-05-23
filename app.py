@@ -23,9 +23,11 @@ def scrape():
     
     # run the scrape function
     mars_data = scrape_mars.scrape()
+    print(mars_data)
     
     # update the Mongo database
     mongo.db.marsinfo.update({}, mars_data, upsert=True)
+
     
     # redirect back to home page
     return redirect("/", code=302)
