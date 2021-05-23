@@ -98,7 +98,7 @@ def scrape():
         hemisphere_images.append(dict)
         browser.visit(hemispheres_url)
     
-    browser.quit()
+    
 
     
     
@@ -110,6 +110,8 @@ def scrape():
     mars_data["hemispheres"] = hemisphere_images
     
     return mars_data
+
+    browser.quit()
     
     
     
